@@ -1,3 +1,8 @@
+import Interfaces.Attacker;
+import Inventory.Items.Weapon;
+import Objects.Mob;
+import Objects.Player;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,24 +19,24 @@ public class GameLoop {
     }
 
     public void getFightResult(Player player) {
-        if(player.healthPoints <= 0) {
-            System.out.printf("Main player %s is die by group of mobs", player.name);
+        if(player.getHealthPoints() <= 0) {
+            System.out.printf("Main player %s is die by group of mobs", player.getName());
         } else {
-            System.out.printf("Main player %s is win and killed group of mobs", player.name);
+            System.out.printf("Main player %s is win and killed group of mobs", player.getName());
         }
     }
 
     public void FightToTheDeath (Player player, Mob mob) {
-        while (player.healthPoints > 0 && mob.healthPoints > 0) {
-            baseLogic.fight(player, mob);
+        while (player.getHealthPoints() > 0 && mob.getHealthPoints() > 0) {
+            baseLogic.fight((Attacker) player, mob);
 
-            if(mob.healthPoints <= 0) {
+            if(mob.getHealthPoints() <= 0) {
                 player.inventor.putItemList(mob.dropLoot());
                 player.inventor.putEquipmentList(mob.dropEquipLoot());
-                player.rewardMoney(mob.rewardMoney);
-                System.out.printf("%s был повержен в схватке\n", mob.name);
+                player.rewardMoney(mob.getRewardMoney());
+                System.out.printf("%s был повержен в схватке\n", mob.getName());
             } else {
-                baseLogic.fight(mob, player);
+                baseLogic.fight((Attacker) mob, player);
             }
         }
     }
@@ -57,7 +62,7 @@ public class GameLoop {
 
         for(Mob temp: mobs) {
             this.FightToTheDeath(Elena, temp);
-            if(Elena.healthPoints <= 0) {
+            if(Elena.getHealthPoints() <= 0) {
                 break;
             }
         }

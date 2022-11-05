@@ -1,4 +1,4 @@
-import java.util.concurrent.atomic.AtomicInteger;
+package Objects;
 
 abstract public class GameObject {
     String name;
@@ -11,5 +11,9 @@ abstract public class GameObject {
 
     public int getID() {
         return identifCode;
+    }
+
+    public String getName() {
+        return this.name;
     }
 };

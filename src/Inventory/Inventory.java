@@ -1,3 +1,8 @@
+package Inventory;
+
+import Inventory.Items.EquipmentCell;
+import Inventory.Items.Item;
+
 import java.util.ArrayList;
 
 public class Inventory<T extends Item> {
@@ -21,7 +26,7 @@ public class Inventory<T extends Item> {
 
 
     public void printInventory() {
-        System.out.println("\nInventory:");
+        System.out.println("\nInventory.Inventory:");
         for (int i = 0; i < this.itemList.size(); ++i) {
             int count = i + 1;
             System.out.printf("%d): %s\n", count, this.itemList.get(i).getName());

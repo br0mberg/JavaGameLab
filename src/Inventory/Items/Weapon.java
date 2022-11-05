@@ -1,4 +1,9 @@
-public class Weapon extends Equipment implements Damager{
+package Inventory.Items;
+
+import Interfaces.Damager;
+import Inventory.Items.Equipment;
+
+public class Weapon extends Equipment implements Damager {
     int attackPower;
 
     public Weapon(String name, int cost, int levelForKeep, int attackPower) {

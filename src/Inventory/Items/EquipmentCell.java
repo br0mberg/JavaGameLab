@@ -1,3 +1,5 @@
+package Inventory.Items;
+
 public class EquipmentCell<T extends Equipment>{
     private T cell;
     public EquipmentCell(T cell) {
@@ -11,7 +13,7 @@ public class EquipmentCell<T extends Equipment>{
         this.cell = cell;
     }
     public String getName() {
-        return this.cell.name;
+        return this.cell.getName();
     }
 
 }
