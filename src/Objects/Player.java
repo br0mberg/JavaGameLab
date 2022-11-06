@@ -1,5 +1,6 @@
 package Objects;
 
+import Interfaces.Attacker;
 import Interfaces.Damageable;
 import Interfaces.Damager;
 import Inventory.Inventory;
@@ -11,7 +12,9 @@ import Objects.Creature;
 
 import java.util.ArrayList;
 
-public class Player extends Creature implements Damageable {
+import static GameControl.GameLogic.calculateDPS;
+
+public class Player extends Creature implements Damageable, Attacker {
     private ArrayList<EquipmentCell> equipmentListWeapons = new ArrayList<EquipmentCell>();
     private ArrayList<EquipmentCell> equipmentListArmor = new ArrayList<EquipmentCell>();
     int attackPower;
@@ -124,6 +127,7 @@ public class Player extends Creature implements Damageable {
         Weapon newDamager = new Weapon("", 0, 0, damage);
         target.getHit((Damager) newDamager);
     }
+
     @Override
     public void getHit(Damager damager) {
         int damage = damager.getDamage();

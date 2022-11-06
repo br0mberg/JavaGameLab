@@ -1,5 +1,7 @@
 package Objects;
 
+import GameMap.Position;
+import Interfaces.Attacker;
 import Interfaces.Damageable;
 import Interfaces.Damager;
 import Interfaces.Lootable;
@@ -12,14 +14,16 @@ import Objects.Creature;
 
 import java.util.ArrayList;
 
-public class Mob extends Creature implements Damageable, Lootable {
+import static GameControl.GameLogic.calculateDPS;
+
+public class Mob extends Creature implements Damageable, Attacker, Lootable {
     private ArrayList<EquipmentCell> equipmentListWeapons = new ArrayList<EquipmentCell>();
     private ArrayList<EquipmentCell> equipmentListArmor = new ArrayList<EquipmentCell>();
     int expPoints;
     int level;
     int attackPower;
     int levelDefense;
-    int APS = 1;
+    public int APS = 1;
     int rewardMoney;
 
     Inventory inventor = new Inventory();
