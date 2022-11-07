@@ -8,7 +8,7 @@ import Interfaces.Movable;
 public class Creature extends GameObject implements Movable {
     private int healthPoints;
 
-    private int baseATK = 0;
+    public int baseATK = 0;
 
     private int baseDEF = 0;
 

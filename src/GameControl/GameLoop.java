@@ -1,6 +1,7 @@
 package GameControl;
 
 import Controllers.CreatureController;
+import Controllers.MapController;
 import GameMap.Map;
 import Generators.ItemGenerator;
 import Generators.MobGenerator;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class GameLoop {
     private ItemGenerator itemGenerator = new ItemGenerator();
@@ -32,7 +34,7 @@ public class GameLoop {
     }
 
 
-    public void start(){
+    public void start() {
         Map map = new Map(2, 2);
         this.currMap = map;
         Random rand = new Random();
@@ -43,12 +45,24 @@ public class GameLoop {
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new CreatureController(Elena));
+        executorService.execute(new MapController(currMap));
 
-        for(int i = 0; i < rand.nextInt(2) + 1; ++i) {
+        for(int i = 0; i < rand.nextInt(2) + 3; ++i) {
             Mob newMob = mobGenerator.getRandomMob();
             newMob.getEquipment(itemGenerator.getRandomWeaponEquipment());
             this.currMap.setObjectOnMap(newMob);
             executorService.execute(new CreatureController(newMob));
+        }
+
+        executorService.shutdown();
+
+        try {
+            if (executorService.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (Elena.getHealthPoints() > 0)
+                    System.out.printf("\n%s win on map all enemy", Elena.getName());
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 };

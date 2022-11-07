@@ -28,6 +28,7 @@ public class CreatureController<T extends Creature> implements Runnable{
                 Weapon mobWeapon = mob.getOneWeaponToHands();
                 if (mobWeapon.getDamage() > player.getOneWeaponToHands().getDamage()) {
                     player.getItem(mobWeapon);
+                    mob.removeEquipmentList();
                     player.equipmentToCell();
                 }
                 player.rewardMoney(mob.getRewardMoney());
@@ -41,8 +42,7 @@ public class CreatureController<T extends Creature> implements Runnable{
 
     @Override
     public void run() {
-        while(controlCreature.getHealthPoints() > 0) {
-            System.out.printf("\n****** %d *********\n", controlCreature.map.gameObjects.size());
+        while(controlCreature.getHealthPoints() > 0 && !Thread.currentThread().isInterrupted()) {
             //if (!controlCreature.map.getCell(controlCreature.cellPosition).gameObjects.isEmpty()) {}
             if(controlCreature instanceof Player) {
                 FightToTheDeath((Player) controlCreature,
@@ -57,7 +57,9 @@ public class CreatureController<T extends Creature> implements Runnable{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            if (controlCreature.map.gameObjects.size() < 2) {
+                Thread.currentThread().interrupt();
+            }
         }
-        Thread.currentThread().interrupt();
     }
 }

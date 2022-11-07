@@ -73,7 +73,7 @@ public class Cell {
         return cells;
     }
 
-    public Mob getEnemyForFight() {
+    public synchronized Mob getEnemyForFight() {
         int maxAttackPower = 0;
         int iter = -1;
         for(int i = 0; i< gameObjects.size(); ++i) {
