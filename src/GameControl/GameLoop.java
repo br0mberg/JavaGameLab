@@ -45,7 +45,7 @@ public class GameLoop {
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.execute(new CreatureController(Elena));
-        executorService.execute(new MapController(currMap));
+
 
         for(int i = 0; i < rand.nextInt(2) + 3; ++i) {
             Mob newMob = mobGenerator.getRandomMob();
@@ -53,7 +53,7 @@ public class GameLoop {
             this.currMap.setObjectOnMap(newMob);
             executorService.execute(new CreatureController(newMob));
         }
-
+        executorService.execute(new MapController(currMap));
         executorService.shutdown();
 
         try {

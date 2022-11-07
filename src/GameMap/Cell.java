@@ -8,19 +8,19 @@ import java.util.Random;
 
 import static GameControl.GameLogic.calculateDPS;
 
-public class Cell {
+public class Cell<T extends GameObject> {
 
     private Map linkedMap;
 
     public Position position;
 
-    public ArrayList<GameObject> gameObjects;
+    public ArrayList<T> gameObjects;
 
     public boolean isEmpty(){
         return this.gameObjects.isEmpty();
     }
 
-    public ArrayList<GameObject> getFromCell(){
+    public ArrayList<T> getFromCell(){
         try {
             if (!isEmpty()) {
                 return gameObjects;
@@ -42,7 +42,7 @@ public class Cell {
         gameObjects.clear();
     }
 
-    public void putIntoCell(GameObject gameObject){
+    public void putIntoCell(T gameObject){
         gameObjects.add(gameObject);
         linkedMap.gameObjects.add(gameObject);
     }
@@ -79,15 +79,19 @@ public class Cell {
         for(int i = 0; i< gameObjects.size(); ++i) {
             GameObject tempObject = gameObjects.get(i);
             if(tempObject instanceof Mob) {
+                int weaponDamage;
+                if (((Mob) tempObject).getOneWeaponToHands() == null) weaponDamage = 1;
+                else weaponDamage = ((Mob) tempObject).getOneWeaponToHands().getDamage();
+
                 int tempPower = calculateDPS(((Mob) tempObject).getAttackPower(),
-                        ((Mob) tempObject).getOneWeaponToHands().getDamage(), ((Mob) tempObject).APS);
+                        weaponDamage, ((Mob) tempObject).APS);
                 if(maxAttackPower < tempPower) {
                     maxAttackPower = tempPower;
                     iter = i;
                 }
             }
         }
-        if (iter >= 0) return (Mob) gameObjects.get(iter);
+        if (iter >= 0 && gameObjects.get(iter) instanceof Mob) return (Mob) gameObjects.get(iter);
         return null;
     }
     public Cell getCellMoveNextRandom() {

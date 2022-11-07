@@ -5,7 +5,7 @@ import Objects.GameObject;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Map {
+public class Map<T extends GameObject> {
 
     public int width;
 
@@ -13,7 +13,7 @@ public class Map {
 
     ArrayList<Cell> cells;
 
-    public ArrayList<GameObject> gameObjects;
+    public ArrayList<T> gameObjects;
 
     public Cell getCell(int x, int y){
         for(int i = 0; i < cells.size(); ++i) {
@@ -56,7 +56,7 @@ public class Map {
         this.cells = cells;
     }
 
-    public ArrayList<GameObject> getObjectsSet(){
+    public ArrayList<T> getObjectsSet(){
         return gameObjects;
     }
 

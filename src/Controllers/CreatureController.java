@@ -17,25 +17,28 @@ public class CreatureController<T extends Creature> implements Runnable{
         this.controlCreature = controlCreature;
     }
 
-    public synchronized void FightToTheDeath (Player player, Mob mob) {
+    public void FightToTheDeath (Player player, Mob mob) {
         if (player == null || mob == null ) return ;
         while (player.getHealthPoints() > 0 && mob.getHealthPoints() > 0) {
-            fight((Attacker) player, mob);
+            synchronized (mob) {
+                fight((Attacker) player, mob);
 
-            if(mob.getHealthPoints() <= 0) {
-                System.out.printf("\n%s был повержен в схватке\n", mob.getName());
-                player.inventor.putItemList(mob.dropLoot());
-                Weapon mobWeapon = mob.getOneWeaponToHands();
-                if (mobWeapon.getDamage() > player.getOneWeaponToHands().getDamage()) {
-                    player.getItem(mobWeapon);
-                    mob.removeEquipmentList();
-                    player.equipmentToCell();
+                if (mob.getHealthPoints() <= 0) {
+                    System.out.printf("\n%s был повержен в схватке\n", mob.getName());
+                    mob.map.gameObjects.remove(mob);
+                    mob.map.getCell(mob.cellPosition).gameObjects.remove(mob);
+                    player.inventor.putItemList(mob.dropLoot());
+                    Weapon mobWeapon = mob.getOneWeaponToHands();
+                    if (mobWeapon.getDamage() > player.getOneWeaponToHands().getDamage()) {
+                        player.getItem(mobWeapon);
+                        mob.removeEquipmentList();
+                        player.equipmentToCell();
+                    }
+                    player.rewardMoney(mob.getRewardMoney());
+
+                } else {
+                    fight((Attacker) mob, player);
                 }
-                player.rewardMoney(mob.getRewardMoney());
-                mob.map.gameObjects.remove(mob);
-                mob.map.getCell(mob.cellPosition).gameObjects.remove(mob);
-            } else {
-                fight((Attacker) mob, player);
             }
         }
     }
@@ -43,6 +46,7 @@ public class CreatureController<T extends Creature> implements Runnable{
     @Override
     public void run() {
         while(controlCreature.getHealthPoints() > 0 && !Thread.currentThread().isInterrupted()) {
+            System.out.printf("\n!!!!!!!!!! %d !!!!!!!!!\n", controlCreature.map.gameObjects.size());
             //if (!controlCreature.map.getCell(controlCreature.cellPosition).gameObjects.isEmpty()) {}
             if(controlCreature instanceof Player) {
                 FightToTheDeath((Player) controlCreature,
@@ -59,6 +63,7 @@ public class CreatureController<T extends Creature> implements Runnable{
             }
             if (controlCreature.map.gameObjects.size() < 2) {
                 Thread.currentThread().interrupt();
+                break;
             }
         }
     }
