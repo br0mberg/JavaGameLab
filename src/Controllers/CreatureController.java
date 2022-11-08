@@ -20,16 +20,20 @@ public class CreatureController<T extends Creature> implements Runnable{
     public void FightToTheDeath (Player player, Mob mob) {
         if (player == null || mob == null ) return ;
         while (player.getHealthPoints() > 0 && mob.getHealthPoints() > 0) {
-            synchronized (mob) {
+            synchronized (mob.map.gameObjects) {
                 fight((Attacker) player, mob);
 
                 if (mob.getHealthPoints() <= 0) {
                     System.out.printf("\n%s был повержен в схватке\n", mob.getName());
                     mob.map.gameObjects.remove(mob);
-                    mob.map.getCell(mob.cellPosition).gameObjects.remove(mob);
+                    synchronized (mob.map.getCell(mob.cellPosition)) {
+                        mob.map.getCell(mob.cellPosition).gameObjects.remove(mob);
+                    }
                     player.inventor.putItemList(mob.dropLoot());
                     Weapon mobWeapon = mob.getOneWeaponToHands();
-                    if (mobWeapon.getDamage() > player.getOneWeaponToHands().getDamage()) {
+                    int mobDamage = 0;
+                    if (mobWeapon != null) mobDamage = mobWeapon.getDamage();
+                    if (mobDamage > player.getOneWeaponToHands().getDamage()) {
                         player.getItem(mobWeapon);
                         mob.removeEquipmentList();
                         player.equipmentToCell();

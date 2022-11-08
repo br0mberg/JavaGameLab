@@ -142,7 +142,7 @@ public class Mob extends Creature implements Damageable, Attacker, Lootable {
     }
 
     @Override
-    public void getHit(Damager damager) {
+    public synchronized void getHit(Damager damager) {
         int damage = damager.getDamage();
         this.setHealthPoints(this.getHealthPoints() - damage);
         System.out.printf(" наносит урон %d мобу: %s %d", damage, this.getName(), this.getID());

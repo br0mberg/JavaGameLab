@@ -54,6 +54,7 @@ public class GameLoop {
             executorService.execute(new CreatureController(newMob));
         }
         executorService.execute(new MapController(currMap));
+
         executorService.shutdown();
 
         try {
