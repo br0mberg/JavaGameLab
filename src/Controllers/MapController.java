@@ -1,6 +1,8 @@
 package Controllers;
 
+import GameMap.Cell;
 import GameMap.Map;
+import GameMap.Position;
 import Objects.GameObject;
 import Objects.Mob;
 import Objects.Player;
@@ -8,9 +10,9 @@ import Objects.Player;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class MapController implements Runnable{
+public class MapController<T extends GameObject> implements Runnable{
     private Map map;
-    private int sleepTimer = 500;
+    private int sleepTimer = 1000;
 
     public MapController(Map map) {
         this.map = map;
@@ -20,38 +22,26 @@ public class MapController implements Runnable{
     public void run() {
         boolean runnable = true;
         while(runnable) {
-            System.out.printf("\n****** %d *********\n", map.gameObjects.size());
-            ArrayList<GameObject> mapObjects = (ArrayList<GameObject>) map.gameObjects.clone();
-
-            Iterator<GameObject> iterator = mapObjects.iterator();
-            while (iterator.hasNext()) {
-                if (iterator instanceof Mob && !(iterator instanceof Player)) {
-                    boolean isSameType = false;
-                    ArrayList<GameObject> cellObjects = map.getCell(((Mob) iterator).cellPosition).gameObjects;
-
-
-                    ArrayList<String> names = new ArrayList<>();
-                    synchronized (this) {
-                        if (cellObjects.size() > 1) {
-                            for (GameObject temp2 : cellObjects) {
-                                if (temp2 instanceof Mob && !iterator.equals(temp2)) {
-                                    ((Mob) temp2).baseATK += 1;
-                                    isSameType = true;
-                                    mapObjects.remove(temp2);
-                                    names.add(temp2.getName());
+            for(int i = 0; i < map.getCells().size(); ++i) {
+                for(int x = 0; x < map.width; x++) {
+                    for (int y = 0; y < map.height; y++) {
+                        ArrayList<T> objects = map.getCell(new Position(x, y)).gameObjects;
+                        ArrayList<Mob> mobs = new ArrayList<>();
+                        if (objects.size() > 1) {
+                            for( T temp : objects) {
+                                if(temp instanceof Mob) {
+                                    mobs.add((Mob) temp);
                                 }
                             }
                         }
-
-                        if (isSameType == true) {
-                            ((Mob) iterator).baseATK += 1;
-                            System.out.printf("\n Клетка [ %d; %d] встретились мобы: %s ",
-                                    map.getCell(((Mob) iterator).cellPosition).position.x,
-                                    map.getCell(((Mob) iterator).cellPosition).position.x,
-                                    ((Mob) iterator).getName());
-                            System.out.println(names);
+                        if (mobs.size() > 1) {
+                            ArrayList<String> names = new ArrayList<>();
+                            for (Mob temp : mobs) {
+                                temp.baseATK += 1;
+                                names.add(temp.getName());
+                            }
+                            System.out.printf("\nКлетка [%d;%d] встретились: %s", x, y, names.toString());
                         }
-                        iterator.next();
                     }
                 }
             }
