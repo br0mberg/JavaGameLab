@@ -122,8 +122,12 @@ public class Player extends Creature implements Damageable, Attacker {
     }
     @Override
     public synchronized void attack(Damageable target) {
-        System.out.printf("\n%s %d %s", this.getClass(), this.getID(), this.getName());
         int damage = calculateDPS(this.getAttackPower(), getOneWeaponToHands().getDamage(), this.APS);
+        String name = "";
+        if (target instanceof Mob) {
+            name  = ((Mob) target).getName();
+        }
+        System.out.printf("\n[%s] [%s] наносит урон %d мобу %s", this.getClass(), this.getName(), damage, name);
         Weapon newDamager = new Weapon("", 0, 0, damage);
         target.getHit((Damager) newDamager);
     }
@@ -132,6 +136,5 @@ public class Player extends Creature implements Damageable, Attacker {
     public synchronized void getHit(Damager damager) {
         int damage = damager.getDamage();
         this.setHealthPoints(this.getHealthPoints() - damage);
-        System.out.printf(" наносит урон %d игроку %s %d", damage, this.getName(), this.getID());
     }
 };

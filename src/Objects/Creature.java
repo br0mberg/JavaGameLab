@@ -29,9 +29,11 @@ public class Creature extends GameObject implements Movable {
     }
 
     public void moveTo(Position position){
+        int x = this.cellPosition.x;
+        int y = this.cellPosition.y;
         map.getCell(this.cellPosition).removeFromCell(this);
         this.map.getCell(position).putIntoCell(this);
         this.cellPosition = position;
-        System.out.printf("\n%s переместился в клетку: %d %d", this.getName(), position.x, position.y);
+        System.out.printf("\n[%s] [%s] перемещается с (%d;%d) в клетку: (%d;%d)", this.getClass(), this.getName(), x, y, position.x, position.y);
     }
 };
